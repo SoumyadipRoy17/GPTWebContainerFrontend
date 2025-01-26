@@ -1,17 +1,29 @@
 // Import necessary dependencies
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "../config/axios";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
     // Add login logic here
-    console.log("Logged in!");
-    navigate("/dashboard"); // Redirect to dashboard or other page after login
+    axios
+      .post("/users/register", {
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        console.log(res.data);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900">
       <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-md">
@@ -25,6 +37,7 @@ const Register = () => {
               Email Address
             </label>
             <input
+              onChange={(e) => setEmail(e.target.value)}
               type="email"
               id="email"
               required
@@ -39,6 +52,7 @@ const Register = () => {
               Password
             </label>
             <input
+              onChange={(e) => setPassword(e.target.value)}
               type="password"
               id="password"
               required
