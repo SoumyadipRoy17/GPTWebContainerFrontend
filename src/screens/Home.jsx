@@ -1,6 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/user.context";
-import { useState } from "react";
 import axios from "../config/axios";
 import { useNavigate } from "react-router-dom";
 
@@ -39,35 +38,36 @@ const Home = () => {
 
   return (
     <>
-      <main className="p-4">
-        <div className="projects flex flex-wrap gap-3 ">
+      <main className="p-6 bg-gray-100 min-h-screen">
+        <div className="projects flex flex-wrap gap-4">
           <button
-            className="project p-4 border border-slate-300 rounded-md"
+            className="project flex items-center gap-2 p-4 border border-gray-300 rounded-lg shadow-md bg-white hover:bg-gray-200 transition"
             onClick={() => setIsModalOpen(true)}
           >
-            <i className="ri-link"></i> Add Project
+            <i className="ri-add-line text-xl"></i> Add Project
           </button>
 
           {project.map((project) => (
             <div
               key={project._id}
-              className="project flex flex-col cursor-pointer  p-4 border border-slate-300 rounded-md min-w-52 hover:bg-slate-300"
+              className="project flex flex-col cursor-pointer p-5 border border-gray-300 rounded-lg min-w-52 bg-white shadow-md hover:bg-gray-100 transition"
               onClick={() => {
                 navigate(`/project/`, {
                   state: { project },
                 });
               }}
             >
-              <h2 className="text-lg  font-semibold">{project.name}</h2>
-              <p className="text-sm text-slate-500">
+              <h2 className="text-lg font-semibold text-gray-800">
+                {project.name}
+              </h2>
+              <p className="text-sm text-gray-500">
                 Created by: {project.createdBy}
               </p>
-              <div className="flex gap-2">
-                <p>
-                  <small>Collaborators : </small>
-                  <i className="ri-user-line"></i>{" "}
-                </p>
-                {project.users.length}
+              <div className="flex items-center gap-2 mt-2 text-gray-600">
+                <i className="ri-user-line text-lg"></i>
+                <span className="text-sm">
+                  Collaborators: {project.users.length}
+                </span>
               </div>
             </div>
           ))}
@@ -75,13 +75,13 @@ const Home = () => {
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-              <h2 className="text-lg font-semibold mb-4">
+              <h2 className="text-xl font-semibold mb-4 text-gray-800">
                 Create a New Project
               </h2>
               <form onSubmit={(e) => createProject(e)}>
                 <label
                   htmlFor="projectName"
-                  className="block text-sm font-medium mb-2"
+                  className="block text-sm font-medium mb-2 text-gray-700"
                 >
                   Project Name
                 </label>
@@ -90,21 +90,21 @@ const Home = () => {
                   id="projectName"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
-                  className="w-full p-2 border border-slate-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none mb-4"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-500 focus:outline-none mb-4 text-gray-800"
                   placeholder="Enter project name"
                   required
                 />
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-3">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
                   >
                     Create
                   </button>
