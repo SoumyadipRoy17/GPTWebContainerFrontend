@@ -1,6 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "../config/axios";
+import {
+  initializeSocket,
+  receiveMessage,
+  sendMessage,
+} from "../config/socket";
+import { UserContext } from "../context/user.context";
 
 const Project = () => {
   const location = useLocation();
@@ -9,13 +15,11 @@ const Project = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState([]);
   const [project, setProject] = useState(location.state.project);
+  const [message, setMessage] = useState(null);
 
-  // const users = [...Array(10)].map((_, index) => ({
-  //   id: index + 1,
-  //   name: `User ${index + 1}`,
-  // }));
-
+  const { user } = useContext(UserContext);
   const [users, setUsers] = useState([]);
+  const messageBox = React.createRef();
 
   const handleUserClick = (id) => {
     setSelectedUserId((prevSelected) => {
@@ -29,6 +33,13 @@ const Project = () => {
     });
   };
   useEffect(() => {
+    initializeSocket(project._id);
+
+    receiveMessage("project-message", (data) => {
+      console.log(data);
+      appendIncomingMessage(data);
+    });
+
     axios
       .get(`projects/get-project/${location.state.project._id}`)
       .then((res) => {
@@ -58,10 +69,82 @@ const Project = () => {
       });
   }
 
+  const send = () => {
+    console.log(user);
+
+    sendMessage("project-message", {
+      message,
+      sender: user,
+    });
+
+    appendOutgoingMessage(message);
+
+    setMessage("");
+  };
+
+  function appendIncomingMessage(messageObject) {
+    const messageBox = document.querySelector(".message-box");
+    const message = document.createElement("div");
+    message.classList.add(
+      "incoming",
+      "message",
+      "max-w-56",
+      "flex",
+      "flex-col",
+      "p-3",
+      "bg-blue-100",
+      "w-fit",
+
+      "rounded-xl",
+      "shadow-md"
+    );
+    message.innerHTML = `
+      <small class="opacity-65 text-xs text-gray-600">
+        ${messageObject.sender.email}
+        <p class='text-sm text-gray-800'>${messageObject.message}</p>
+      </small> 
+      `;
+
+    messageBox.appendChild(message);
+    scrollToBottom();
+  }
+  function appendOutgoingMessage(message) {
+    const messageBox = document.querySelector(".message-box");
+    const newMessage = document.createElement("div");
+    newMessage.classList.add(
+      "message",
+      "self-end", // Aligns the message to the right
+      "text-right", // Ensures text inside is also right-aligned
+      "ml-auto", // Pushes the message to the right side
+      "max-w-56",
+      "flex",
+      "flex-col",
+      "p-3",
+      "bg-green-100",
+      "text-gray-800",
+      "w-fit",
+      "rounded-xl",
+      "shadow-md"
+    );
+    newMessage.innerHTML = `
+      <small class="opacity-65 text-xs text-gray-600">
+        ${user.email}
+        <p class='text-sm text-gray-800'>${message}</p>
+      </small> 
+      `;
+
+    messageBox.appendChild(newMessage);
+    scrollToBottom();
+  }
+
+  function scrollToBottom() {
+    messageBox.current.scrollTop = messageBox.current.scrollHeight;
+  }
+
   return (
     <main className="h-screen w-screen flex bg-gray-100">
-      <section className="left relative h-full min-w-96 flex flex-col bg-white shadow-lg border-r border-gray-300">
-        <header className="flex justify-between items-center p-3 px-4 w-full bg-gray-200 shadow-md">
+      <section className="left relative h-screen min-w-96 flex flex-col bg-white shadow-lg border-r border-gray-300">
+        <header className="flex justify-between items-center p-3 px-4 w-full bg-gray-200 shadow-md absolute z-10 top-0">
           <button
             className="flex gap-2 "
             onClick={() => {
@@ -78,37 +161,52 @@ const Project = () => {
             <i className="ri-group-fill text-lg"></i>
           </button>
         </header>
-        <div className="conversation-area flex-grow flex flex-col p-3">
-          <div className="message-box flex-grow flex flex-col gap-2 overflow-y-auto">
-            <div className="incoming message max-w-56 flex flex-col p-3 bg-blue-100 w-fit rounded-xl shadow-md">
+        <div className="conversation-area flex flex-col h-screen w-full p-4 bg-gray-100">
+          {/* Message Box */}
+          <div
+            ref={messageBox}
+            className="message-box pt-14 flex-grow flex flex-col gap-2 overflow-y-auto p-3 bg-white rounded-lg shadow-md scrollbar-hide"
+          >
+            {/* Incoming Message Example */}
+            <div className="incoming message max-w-[75%] sm:max-w-[60%] p-3 bg-blue-100 rounded-lg shadow-md">
               <small className="opacity-65 text-xs text-gray-600">
                 example@gmail.com
               </small>
               <p className="text-sm text-gray-800">
-                Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem
-                ipsum dolor sit amet consectetur adipisicing elit. Quis, cum
+                Hello Devs.. This is your chatroom !
               </p>
             </div>
-            <div className="ml-auto outgoing message max-w-56 flex flex-col p-3 bg-green-100 w-fit rounded-xl shadow-md">
+
+            {/* Outgoing Message Example */}
+            <div className="outgoing message ml-auto max-w-[75%] sm:max-w-[60%] p-3 bg-green-100 rounded-lg shadow-md text-right">
               <small className="opacity-65 text-xs text-gray-600">
                 example@gmail.com
               </small>
               <p className="text-sm text-gray-800">
-                Lorem ipsum dolor sit amet.
+                Feel free to discuss anything here, you can also ask our ai bot
+                !
               </p>
             </div>
           </div>
-          <div className="inputField w-full flex items-center mt-3 bg-white p-2 rounded-lg shadow-inner border border-gray-300">
+
+          {/* Input Field */}
+          <div className="inputField w-full flex items-center bg-white p-3 rounded-lg shadow-md border border-gray-300 sticky bottom-0">
             <input
-              className="p-2 px-4 flex-grow border-none outline-none rounded-lg text-gray-700 bg-transparent"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="p-2 flex-grow border-none outline-none rounded-lg text-gray-700 bg-transparent"
               type="text"
               placeholder="Enter message..."
             />
-            <button className="inputField p-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-300">
+            <button
+              onClick={send}
+              className="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-300"
+            >
               <i className="ri-send-plane-fill text-lg"></i>
             </button>
           </div>
         </div>
+
         {/* <div
           className={`sidePanel flex flex-col gap-2 w-full h-full bg-slate-100 absolute transition-all  ${
             isSidePanelOpen ? "translate-x-0" : "-translate-x-full "
