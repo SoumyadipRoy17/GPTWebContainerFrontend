@@ -1,10 +1,10 @@
-import { WebContainer } from "web-container";
+import { WebContainer } from "@webcontainer/api";
 
 let webContainerInstance = null;
 
-export const getWebContainer = () => {
+export const getWebContainer = async () => {
   if (!webContainerInstance) {
-    webContainerInstance = new WebContainer();
+    webContainerInstance = await WebContainer.boot();
   }
 
   return webContainerInstance;

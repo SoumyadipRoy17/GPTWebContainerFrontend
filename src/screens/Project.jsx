@@ -9,7 +9,7 @@ import {
 } from "../config/socket";
 import Markdown from "markdown-to-jsx";
 import hljs from "highlight.js";
-// import { getWebContainer } from "../config/webcontainer";
+import { getWebContainer } from "../config/webContainer";
 
 function SyntaxHighlightedCode(props) {
   const ref = useRef(null);
@@ -106,12 +106,14 @@ const Project = () => {
   useEffect(() => {
     initializeSocket(project._id);
 
-    // if (!webContainer) {
-    //   getWebContainer().then((container) => {
-    //     setWebContainer(container);
-    //     console.log("container started");
-    //   });
-    // }
+    if (!webContainer) {
+      getWebContainer().then((container) => {
+        setWebContainer(container);
+        console.log("container started");
+      });
+    } else {
+      console.log("container already started");
+    }
 
     receiveMessage("project-message", (data) => {
       console.log(data);
