@@ -102,18 +102,29 @@ const Project = () => {
       </div>
     );
   }
+  useEffect(() => {
+    if (!webContainer) {
+      (async () => {
+        const container = await getWebContainer();
+        setWebContainer(container);
+        console.log("WebContainer initialized:", container);
+      })();
+    } else {
+      console.log("WebContainer already started");
+    }
+  }, [webContainer]); // Ensures this runs only when `webContainer` is undefined
 
   useEffect(() => {
     initializeSocket(project._id);
 
-    if (!webContainer) {
-      getWebContainer().then((container) => {
-        setWebContainer(container);
-        console.log("container started");
-      });
-    } else {
-      console.log("container already started");
-    }
+    // if (!webContainer) {
+    //   getWebContainer().then((container) => {
+    //     setWebContainer(container);
+    //     console.log("container started");
+    //   });
+    // } else {
+    //   console.log("container already started");
+    // }
 
     receiveMessage("project-message", (data) => {
       console.log(data);
