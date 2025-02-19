@@ -112,7 +112,7 @@ const Project = () => {
   //   } else {
   //     console.log("WebContainer already started");
   //   }
-  // }, [webContainer]); // dada Ensures this runs only when `webContainer` is undefined
+  // }, [webContainer]); // nb,mnm,n,n,dada Ensures this runs only when `webContainer` is undefined
 
   useEffect(() => {
     initializeSocket(project._id);
@@ -120,7 +120,8 @@ const Project = () => {
     if (!webContainer) {
       getWebContainer().then((container) => {
         setWebContainer(container);
-        console.log("container started");
+        console.log("container started !");
+        console.log("container", container);
       });
     } else {
       console.log("container already started");
