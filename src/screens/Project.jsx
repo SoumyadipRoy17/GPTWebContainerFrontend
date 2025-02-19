@@ -114,59 +114,124 @@ const Project = () => {
   //   }
   // }, [webContainer]); // nb,mnm,n,n,dada Ensures this runs only when `webContainer` is undefined
 
+  // Use this
+  // useEffect(() => {
+  //   initializeSocket(project._id);
+
+  //   if (!webContainer) {
+  //     console.log("🚀 Starting WebContainer...");
+
+  //     getWebContainer().then((container) => {
+  //       setWebContainer(container);
+  //       console.log("container started !");
+  //       console.log("container", container);
+  //     });
+  //   } else {
+  //     console.log("container already started");
+  //   }
+
+  //   receiveMessage("project-message", (data) => {
+  //     console.log("Data", data);
+  //     console.log("here in project.js receive message");
+
+  //     if (data.sender._id == "ai") {
+  //       const message = JSON.parse(data.message);
+
+  //       console.log(message);
+  //       console.log("here in webcontainer mounting stage", webContainer);
+  //       webContainer?.mount(message.fileTree);
+
+  //       if (message.fileTree) {
+  //         setFileTree(message.fileTree || {});
+  //       }
+  //       setMessages((prevMessages) => [...prevMessages, data]); // Update messages state
+  //     } else {
+  //       setMessages((prevMessages) => [...prevMessages, data]); // Update messages state
+  //     }
+  //   });
+
+  //   axios
+  //     .get(`/projects/get-project/${location.state.project._id}`)
+  //     .then((res) => {
+  //       console.log(res.data.project);
+
+  //       setProject(res.data.project);
+  //       setFileTree(res.data.project.fileTree || {});
+  //     });
+
+  //   axios
+  //     .get("/users/all")
+  //     .then((res) => {
+  //       setUsers(res.data.users);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
+
   useEffect(() => {
     initializeSocket(project._id);
 
-    if (!webContainer) {
-      console.log("🚀 Starting WebContainer...");
-
-      getWebContainer().then((container) => {
-        setWebContainer(container);
-        console.log("container started !");
-        console.log("container", container);
+    // Ensure WebContainer initializes only once
+    let containerInstance = null;
+    getWebContainer()
+      .then((container) => {
+        if (!containerInstance) {
+          setWebContainer(container);
+          containerInstance = container;
+          console.log("✅ WebContainer initialized:", container);
+        }
+      })
+      .catch((error) => {
+        console.error("❌ Error initializing WebContainer:", error);
       });
-    } else {
-      console.log("container already started");
-    }
 
     receiveMessage("project-message", (data) => {
-      console.log("Data", data);
-      console.log("here in project.js receive message");
+      console.log("📩 Received Message:", data);
 
-      if (data.sender._id == "ai") {
-        const message = JSON.parse(data.message);
-
-        console.log(message);
-        console.log("here in webcontainer mounting stage", webContainer);
-        webContainer?.mount(message.fileTree);
+      if (data.sender._id === "ai") {
+        let message;
+        try {
+          message =
+            typeof data.message === "string"
+              ? JSON.parse(data.message)
+              : data.message;
+          console.log("📂 AI-generated FileTree:", message.fileTree);
+        } catch (error) {
+          console.error("❌ Error parsing AI message:", error);
+          return;
+        }
 
         if (message.fileTree) {
+          if (webContainer) {
+            console.log("🔄 Mounting file tree...");
+            webContainer.mount(message.fileTree);
+          } else {
+            console.warn("⚠️ WebContainer is not initialized yet.");
+          }
           setFileTree(message.fileTree || {});
         }
-        setMessages((prevMessages) => [...prevMessages, data]); // Update messages state
-      } else {
-        setMessages((prevMessages) => [...prevMessages, data]); // Update messages state
       }
+
+      setMessages((prevMessages) => [...prevMessages, data]); // Update message state
     });
 
+    // Fetch Project Data
     axios
       .get(`/projects/get-project/${location.state.project._id}`)
       .then((res) => {
-        console.log(res.data.project);
-
+        console.log("📁 Project Data:", res.data.project);
         setProject(res.data.project);
         setFileTree(res.data.project.fileTree || {});
-      });
+      })
+      .catch((err) => console.error("❌ Error fetching project data:", err));
 
+    // Fetch Users Data
     axios
       .get("/users/all")
-      .then((res) => {
-        setUsers(res.data.users);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+      .then((res) => setUsers(res.data.users))
+      .catch((err) => console.error("❌ Error fetching users:", err));
+  }, []); // Dependency array remains empty to run only once
 
   function saveFileTree(ft) {
     axios
