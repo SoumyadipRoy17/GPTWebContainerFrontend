@@ -519,29 +519,3 @@ const Project = () => {
 };
 
 export default Project;
-//   if (data.sender._id === "ai") {
-//     let message;
-//     try {
-//       message =
-//         typeof data.message === "string"
-//           ? JSON.parse(data.message)
-//           : data.message;
-//       console.log("Parsed AI message:", message);
-//     } catch (error) {
-//       console.error("Error parsing AI message:", error);
-//       return;
-//     }
-
-//     if (message.fileTree && webContainer) {
-//       webContainer.mount(message.fileTree);
-//       setFileTree(message.fileTree || {});
-//     }
-
-//     setMessages((prevMessages) => [
-//       ...prevMessages,
-//       { sender: data.sender, message: message.text },
-//     ]);
-//   } else {
-//     setMessages((prevMessages) => [...prevMessages, data]);
-//   }
-// });
