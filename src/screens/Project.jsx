@@ -102,38 +102,39 @@ const Project = () => {
       </div>
     );
   }
-  useEffect(() => {
-    if (!webContainer) {
-      (async () => {
-        const container = await getWebContainer();
-        setWebContainer(container);
-        console.log("WebContainer initialized:", container);
-      })();
-    } else {
-      console.log("WebContainer already started");
-    }
-  }, [webContainer]); // Ensures this runs only when `webContainer` is undefined
+  // useEffect(() => {
+  //   if (!webContainer) {
+  //     (async () => {
+  //       const container = await getWebContainer();
+  //       setWebContainer(container);
+  //       console.log("WebContainer initialized:", container);
+  //     })();
+  //   } else {
+  //     console.log("WebContainer already started");
+  //   }
+  // }, [webContainer]); // Ensures this runs only when `webContainer` is undefined
 
   useEffect(() => {
     initializeSocket(project._id);
 
-    // if (!webContainer) {
-    //   getWebContainer().then((container) => {
-    //     setWebContainer(container);
-    //     console.log("container started");
-    //   });
-    // } else {
-    //   console.log("container already started");
-    // }
+    if (!webContainer) {
+      getWebContainer().then((container) => {
+        setWebContainer(container);
+        console.log("container started");
+      });
+    } else {
+      console.log("container already started");
+    }
 
     receiveMessage("project-message", (data) => {
-      console.log(data);
+      console.log("Data", data);
+      console.log("here in project.js receive message");
 
       if (data.sender._id == "ai") {
         const message = JSON.parse(data.message);
 
         console.log(message);
-
+        console.log("here in webcontainer mounting stage", webContainer);
         webContainer?.mount(message.fileTree);
 
         if (message.fileTree) {
@@ -144,7 +145,32 @@ const Project = () => {
         setMessages((prevMessages) => [...prevMessages, data]); // Update messages state
       }
     });
+    //   if (data.sender._id === "ai") {
+    //     let message;
+    //     try {
+    //       message =
+    //         typeof data.message === "string"
+    //           ? JSON.parse(data.message)
+    //           : data.message;
+    //       console.log("Parsed AI message:", message);
+    //     } catch (error) {
+    //       console.error("Error parsing AI message:", error);
+    //       return;
+    //     }
 
+    //     if (message.fileTree && webContainer) {
+    //       webContainer.mount(message.fileTree);
+    //       setFileTree(message.fileTree || {});
+    //     }
+
+    //     setMessages((prevMessages) => [
+    //       ...prevMessages,
+    //       { sender: data.sender, message: message.text },
+    //     ]);
+    //   } else {
+    //     setMessages((prevMessages) => [...prevMessages, data]);
+    //   }
+    // });
     axios
       .get(`/projects/get-project/${location.state.project._id}`)
       .then((res) => {
