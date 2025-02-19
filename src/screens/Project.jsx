@@ -117,7 +117,9 @@ const Project = () => {
   useEffect(() => {
     initializeSocket(project._id);
 
-    if (webContainer) {
+    if (!webContainer) {
+      console.log("🚀 Starting WebContainer...");
+
       getWebContainer().then((container) => {
         setWebContainer(container);
         console.log("container started !");
@@ -146,32 +148,7 @@ const Project = () => {
         setMessages((prevMessages) => [...prevMessages, data]); // Update messages state
       }
     });
-    //   if (data.sender._id === "ai") {
-    //     let message;
-    //     try {
-    //       message =
-    //         typeof data.message === "string"
-    //           ? JSON.parse(data.message)
-    //           : data.message;
-    //       console.log("Parsed AI message:", message);
-    //     } catch (error) {
-    //       console.error("Error parsing AI message:", error);
-    //       return;
-    //     }
 
-    //     if (message.fileTree && webContainer) {
-    //       webContainer.mount(message.fileTree);
-    //       setFileTree(message.fileTree || {});
-    //     }
-
-    //     setMessages((prevMessages) => [
-    //       ...prevMessages,
-    //       { sender: data.sender, message: message.text },
-    //     ]);
-    //   } else {
-    //     setMessages((prevMessages) => [...prevMessages, data]);
-    //   }
-    // });
     axios
       .get(`/projects/get-project/${location.state.project._id}`)
       .then((res) => {
@@ -477,3 +454,29 @@ const Project = () => {
 };
 
 export default Project;
+//   if (data.sender._id === "ai") {
+//     let message;
+//     try {
+//       message =
+//         typeof data.message === "string"
+//           ? JSON.parse(data.message)
+//           : data.message;
+//       console.log("Parsed AI message:", message);
+//     } catch (error) {
+//       console.error("Error parsing AI message:", error);
+//       return;
+//     }
+
+//     if (message.fileTree && webContainer) {
+//       webContainer.mount(message.fileTree);
+//       setFileTree(message.fileTree || {});
+//     }
+
+//     setMessages((prevMessages) => [
+//       ...prevMessages,
+//       { sender: data.sender, message: message.text },
+//     ]);
+//   } else {
+//     setMessages((prevMessages) => [...prevMessages, data]);
+//   }
+// });
