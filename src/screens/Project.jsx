@@ -117,7 +117,7 @@ const Project = () => {
   useEffect(() => {
     initializeSocket(project._id);
 
-    if (!webContainer) {
+    if (webContainer) {
       getWebContainer().then((container) => {
         setWebContainer(container);
         console.log("container started !");
