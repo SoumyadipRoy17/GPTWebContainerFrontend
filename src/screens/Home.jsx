@@ -316,13 +316,24 @@ const Home = () => {
   const [projectName, setProjectName] = useState("");
   const [project, setProject] = useState([]);
   const navigate = useNavigate();
-
   async function createProject(e) {
     e.preventDefault();
     try {
-      const res = await axios.post("/projects/create", { name: projectName });
+      const token = localStorage.getItem("token"); // Retrieve token from localStorage
+
+      const res = await axios.post(
+        "/projects/create",
+        { name: projectName },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Attach token
+          },
+        }
+      );
+
       setIsModalOpen(false);
       setProject((prevProjects) => [...prevProjects, res.data.project]);
+      navigate(0);
     } catch (err) {
       console.log(err);
     }
@@ -364,7 +375,7 @@ const Home = () => {
   return (
     <>
       <header className="flex justify-between items-center p-6 bg-gradient-to-r from-indigo-500 to-purple-600 shadow-md text-white">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <h1 className="text-3xl font-bold">Dashboard SockeTron 🤖</h1>
         <button
           onClick={handleLogout}
           className="px-6 py-2 bg-red-600 rounded-md hover:bg-red-700 transition shadow-lg"
