@@ -253,6 +253,134 @@ const Project = () => {
     messageBox.current.scrollTop = messageBox.current.scrollHeight;
   }
 
+  //   return (
+  //     <main className="h-screen w-screen flex bg-gradient-to-r from-gray-100 to-gray-300">
+  //       {/* Left Section */}
+  //       <section className="left relative flex flex-col h-screen min-w-96 bg-white shadow-lg rounded-lg p-4">
+  //         {/* Header */}
+  //         <header className="flex justify-between items-center p-4 bg-gray-200 rounded-t-lg shadow-sm">
+  //           <button
+  //             className="flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 transition"
+  //             onClick={() => setIsModalOpen(true)}
+  //           >
+  //             <i className="ri-add-fill mr-1 text-xl"></i>
+  //             Add Collaborator
+  //           </button>
+  //           <button
+  //             onClick={() => setIsSidePanelOpen(!isSidePanelOpen)}
+  //             className="p-2 bg-gray-300 rounded-full hover:bg-gray-400 transition"
+  //           >
+  //             <i className="ri-group-fill text-lg"></i>
+  //           </button>
+  //         </header>
+
+  //         {/* Conversation Area */}
+  //         <div className="conversation-area pt-14 pb-10 flex-grow flex flex-col h-full relative">
+  //           <div
+  //             ref={messageBox}
+  //             className="message-box p-2 flex-grow flex flex-col gap-2 overflow-auto max-h-full scrollbar-hide bg-gray-50 rounded-lg"
+  //           >
+  //             {messages.map((msg, index) => (
+  //               <div
+  //                 key={index}
+  //                 className={`${
+  //                   msg.sender._id === "ai"
+  //                     ? "max-w-80 bg-blue-100"
+  //                     : "max-w-52 bg-gray-100"
+  //                 } ${msg.sender._id === user._id.toString() && "ml-auto"}
+  //                   message flex flex-col p-3 rounded-lg shadow-md`}
+  //               >
+  //                 <small className="opacity-65 text-xs text-gray-600">
+  //                   {msg.sender.email}
+  //                 </small>
+  //                 <div className="text-sm text-gray-800">
+  //                   {msg.sender._id === "ai" ? (
+  //                     WriteAiMessage(msg.message)
+  //                   ) : (
+  //                     <p>{msg.message}</p>
+  //                   )}
+  //                 </div>
+  //               </div>
+  //             ))}
+  //           </div>
+
+  //           {/* Input Field */}
+  //           <div className="inputField w-full flex absolute bottom-0 bg-white p-2 shadow-md rounded-b-lg">
+  //             <input
+  //               value={message}
+  //               onChange={(e) => setMessage(e.target.value)}
+  //               className="p-3 flex-grow border rounded-l-lg focus:outline-none"
+  //               type="text"
+  //               placeholder="Enter message..."
+  //             />
+  //             <button
+  //               onClick={send}
+  //               className="px-5 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 transition"
+  //             >
+  //               <i className="ri-send-plane-fill text-lg"></i>
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </section>
+
+  //       {/* Right Section - Code Editor */}
+  //       <section className="right bg-white shadow-lg flex-grow flex flex-col p-4 rounded-lg">
+  //         <div className="explorer bg-gray-200 p-3 rounded-lg shadow-sm">
+  //           <h2 className="text-lg font-semibold text-gray-700 mb-2">
+  //             File Explorer
+  //           </h2>
+  //           <div className="file-tree">
+  //             {Object.keys(fileTree).map((file, index) => (
+  //               <button
+  //                 key={index}
+  //                 onClick={() => {
+  //                   setCurrentFile(file);
+  //                   setOpenFiles([...new Set([...openFiles, file])]);
+  //                 }}
+  //                 className="tree-element p-2 flex items-center gap-2 bg-gray-300 hover:bg-gray-400 transition rounded-md"
+  //               >
+  //                 <p className="font-medium text-gray-800">{file}</p>
+  //               </button>
+  //             ))}
+  //           </div>
+  //         </div>
+
+  //         <div className="code-editor flex flex-col flex-grow mt-4 bg-gray-50 p-4 rounded-lg shadow-md">
+  //           <h2 className="text-lg font-semibold text-gray-700 mb-2">
+  //             Code Editor
+  //           </h2>
+  //           <div className="bottom flex flex-grow max-w-full overflow-auto">
+  //             {fileTree[currentFile] && (
+  //               <pre className="hljs h-full p-3 bg-gray-100 rounded-lg shadow-sm">
+  //                 <code
+  //                   className="hljs outline-none"
+  //                   contentEditable
+  //                   suppressContentEditableWarning
+  //                   onBlur={(e) => {
+  //                     const updatedContent = e.target.innerText;
+  //                     const ft = {
+  //                       ...fileTree,
+  //                       [currentFile]: { file: { contents: updatedContent } },
+  //                     };
+  //                     setFileTree(ft);
+  //                     saveFileTree(ft);
+  //                   }}
+  //                   dangerouslySetInnerHTML={{
+  //                     __html: hljs.highlight(
+  //                       "javascript",
+  //                       fileTree[currentFile].file.contents
+  //                     ).value,
+  //                   }}
+  //                 />
+  //               </pre>
+  //             )}
+  //           </div>
+  //         </div>
+  //       </section>
+  //     </main>
+  //   );
+  // };
+
   return (
     <main className="h-screen w-screen flex">
       <section className="left relative flex flex-col h-screen min-w-96 bg-slate-300">
@@ -341,7 +469,7 @@ const Project = () => {
         </div>
       </section>
       {/*  right section */}
-      <section className="right  bg-red-50 flex-grow h-full flex">
+      <section className="right  bg-blue-50 flex-grow h-full flex">
         {/*  file tree */}
         <div className="explorer h-full max-w-64 min-w-52 bg-slate-200">
           <div className="file-tree w-full">
@@ -370,7 +498,7 @@ const Project = () => {
                   key={index}
                   onClick={() => setCurrentFile(file)}
                   className={`open-file cursor-pointer p-2 px-4 flex items-center w-fit gap-2 bg-slate-300 ${
-                    currentFile === file ? "bg-slate-400" : ""
+                    currentFile === file ? "bg-blue-400" : ""
                   }`}
                 >
                   <p className="font-semibold text-lg">{file}</p>
@@ -418,7 +546,7 @@ const Project = () => {
                     setIframeUrl(url);
                   });
                 }}
-                className="p-2 px-4 bg-slate-300 hover:bg-slate-600 text-white"
+                className="p-2 px-4 bg-blue-300 hover:bg-blue-600 text-white rounded-md"
               >
                 run
               </button>
