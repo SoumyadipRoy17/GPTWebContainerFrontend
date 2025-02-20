@@ -5,6 +5,7 @@ import Register from "../screens/Register";
 import Home from "../screens/Home";
 import Project from "../screens/Project";
 import UserAuth from "../auth/UserAuth";
+import LandingPage from "../screens/Landing";
 
 const AppRoutes = () => {
   return (
@@ -18,9 +19,19 @@ const AppRoutes = () => {
             </UserAuth>
           }
         />
+
+        <Route
+          path="/landing"
+          element={
+            <UserAuth>
+              <LandingPage />
+            </UserAuth>
+          }
+        />
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
+
         <Route
           path="/project"
           element={
