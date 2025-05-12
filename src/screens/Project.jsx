@@ -192,6 +192,7 @@ const Project = () => {
       if (data.sender._id === "ai") {
         let message;
         try {
+          console.log("🔍 Parsing AI message...");
           message =
             typeof data.message === "string"
               ? JSON.parse(data.message)
