@@ -359,7 +359,7 @@ const Home = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("/projects/all", {
+      .get("https://gpt-web-container.vercel.app/projects/all", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
