@@ -23,7 +23,6 @@ export const receiveMessage = (eventName, cb) => {
 export const sendMessage = (eventName, data) => {
   console.log("here in socket.js send message");
   socketInstance.emit(eventName, data);
-  console.log("here in socket.js send message end", data);
 };
 
 // import socket from "socket.io-client";
