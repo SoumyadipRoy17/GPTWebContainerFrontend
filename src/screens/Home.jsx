@@ -363,6 +363,7 @@ const Home = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true,
       })
       .then((res) => {
         setProject(res.data.projects);
