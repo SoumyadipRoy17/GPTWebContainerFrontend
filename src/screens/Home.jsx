@@ -322,12 +322,13 @@ const Home = () => {
       const token = localStorage.getItem("token"); // Retrieve token from localStorage
 
       const res = await axios.post(
-        "/projects/create",
+        "https://gpt-web-container.vercel.app/projects/create",
         { name: projectName },
         {
           headers: {
             Authorization: `Bearer ${token}`, // Attach token
           },
+          withCredentials: true,
         }
       );
 
@@ -342,10 +343,11 @@ const Home = () => {
   function handleLogout() {
     const token = localStorage.getItem("token");
     axios
-      .get("/users/logout", {
+      .get("https://gpt-web-container.vercel.app/users/logout", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true,
       })
       .then(() => {
         setUser(null);
